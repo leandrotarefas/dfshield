@@ -46,7 +46,7 @@ function getDeviceInfo() {
     }
 
     var xhr = new XMLHttpRequest();
-    var apiURL = 'http://localhost:8080/device-info';
+    var apiURL = 'http://https://dfshield-leandrommelo-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/device-info';
 
     xhr.open('POST', apiURL, true); // Alterado para POST para enviar dados
     xhr.setRequestHeader('Content-Type', 'application/json'); // Configurar cabeçalho para JSON

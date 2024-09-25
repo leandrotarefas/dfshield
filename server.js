@@ -94,7 +94,10 @@ async function deviceFingerPrintVisa(req, res){
 const key = 0;
 
 app.get('/dfshield', async (req, res) => {
-    if(key == 1){
+
+    const { key = "visa"} = req.query;
+    
+    if(key == "visa"){
         return deviceFingerPrintVisa(req,res);
     }else{
         return deviceFingerShield(req, res);

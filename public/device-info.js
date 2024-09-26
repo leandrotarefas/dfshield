@@ -1,6 +1,8 @@
 function getDeviceInfo() {
     // Coletar informações do dispositivo
     const deviceInfo = {
+        env: "{{v_ENV}}",
+        sessionId: "{{v_SESSION}}",
         userAgent: navigator.userAgent, // User-Agent do navegador
         platform: navigator.platform, // Plataforma do dispositivo (ex: Windows, Mac, Linux)
         language: navigator.language || navigator.userLanguage, // Idioma do navegador

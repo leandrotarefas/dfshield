@@ -15,6 +15,8 @@ app.use(bodyParser.json());
 
 const fs = require('fs');
 
+const cron = require('node-cron');
+
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -115,6 +117,17 @@ app.get('/dfshield', async (req, res) => {
     }else{
         return deviceFingerShield(req, res);
     }
+});
+
+
+
+app.get('/health', async (req, res) => {
+    return res.json({"healthAt":new Date().toISOString()});
+});
+
+
+cron.schedule('*/30 * * * * *', async () => {
+    await axios.get(`https://dfshield-leandrommelo-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com/health`);
 });
 
 

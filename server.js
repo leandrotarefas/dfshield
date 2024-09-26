@@ -13,7 +13,12 @@ const geoip = require('geoip-lite');
 
 app.use(bodyParser.json());
 
+const fs = require('fs');
+
+
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Middleware para capturar User-Agent
 app.use(useragent.express());
@@ -32,17 +37,18 @@ app.post('/device-info', (req, res) => {
     // Captura geolocalização aproximada com base no IP
     const geo = geoip.lookup(ip);
 
+    console.log('-----------------------------------------------------------------');
     // Impressão organizada no console
     console.log('==================== Dados de Geolocalização ====================');
     console.log(`IP do Cliente: ${ip}`);
     console.log('Dados de Geolocalização:', JSON.stringify(geo, null, 2)); // Indentação de 2 espaços
-    console.log('===============================================================');
 
     // Captura os dados enviados do frontend
     const deviceInfo = req.body;
     console.log('==================== Dados do Dispositivo ====================');
     console.log('Dados do Dispositivo Recebidos:', JSON.stringify(deviceInfo, null, 2)); // Indentação de 2 espaços
-    console.log('===============================================================');
+
+    console.log('-----------------------------------------------------------------');
 
     // Responder com uma confirmação
     res.send();
@@ -51,16 +57,27 @@ app.post('/device-info', (req, res) => {
 
 function deviceFingerShield(req, res){
 
-    const filename = "device-info.js";
+    const { env = "HML", session_id } = req.query;
+
+    const filename = "device-info.js";   
   
     // Usando res.sendFile para enviar o arquivo específico
     const filePath = path.join(__dirname, 'public', filename);
-    
-    res.sendFile(filePath, (err) => {
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
-        res.status(err.status).end();
+            return res.status(500).send('Erro no processamento');
         }
-    });
+
+        // Substitui as variáveis no conteúdo do arquivo
+        let modifiedData = data.replace(/{{v_ENV}}/g, env)
+                               .replace(/{{v_SESSION}}/g, session_id);
+
+        // Envia o conteúdo modificado como resposta
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(modifiedData);
+    });   
+    
 }
 
 
@@ -91,7 +108,6 @@ async function deviceFingerPrintVisa(req, res){
 const key = 0;
 
 app.get('/dfshield', async (req, res) => {
-
     const { key = "visa"} = req.query;
     
     if(key == "visa"){

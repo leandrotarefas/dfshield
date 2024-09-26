@@ -107,6 +107,23 @@ async function deviceFingerPrintVisa(req, res){
 }
 
 
+async function deviceFingerPrintLinx(req, res){
+    try {
+  
+        // URL da qual você deseja obter o conteúdo
+        const response = await axios.get(`https://fhp-de-js.group-ib.com/fafdc710-b52f-11ee-bdb8-d94ee6000000.js`);
+    
+        // Definindo o cabeçalho de resposta para permitir que o conteúdo seja utilizado como um script
+        res.setHeader('Content-Type', 'application/javascript');
+        
+        // Retornando o conteúdo da URL externa
+        res.send(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar conteúdo:', error);
+        res.status(500).send('Erro ao buscar conteúdo externo.');
+      }
+}
+
 const key = 0;
 
 app.get('/dfshield', async (req, res) => {
@@ -114,6 +131,8 @@ app.get('/dfshield', async (req, res) => {
     
     if(key == "visa"){
         return deviceFingerPrintVisa(req,res);
+    }else if(key == "linx"){
+        return deviceFingerPrintLinx(req,res);
     }else{
         return deviceFingerShield(req, res);
     }

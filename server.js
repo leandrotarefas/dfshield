@@ -13,10 +13,7 @@ const geoip = require('geoip-lite');
 
 app.use(bodyParser.json());
 
-
 app.use(cors());
-app.use(express.static(path.join(__dirname, 'public')));
-
 
 // Middleware para capturar User-Agent
 app.use(useragent.express());
